@@ -9,4 +9,20 @@
         values(#{name},#{username},#{password},#{phone},#{sex},#{idNumber},#{status},#{createTime},#{updateTime},
                #{createUser},#{updateUser})
     </insert>
+    <select id="queryAllEmployee" resultType="long">
+        select count(*) from employee
+    </select>
+
+
+    <select id="queryEmployeeByPage" resultType="employee">
+        select * from employee
+        <where>
+            <if test="name != null and name !=''">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by create_time desc
+        limit #{page}, #{pageSize}
+    </select>
+
 </mapper>

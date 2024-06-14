@@ -6,18 +6,23 @@ import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
+import com.sky.entity.User;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.sky.constant.PasswordConstant.DEFAULT_PASSWORD;
 import static com.sky.constant.StatusConstant.ENABLE;
@@ -26,7 +31,7 @@ import static com.sky.context.BaseContext.threadLocal;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
+    @Resource
     private EmployeeMapper employeeMapper;
 
     /**
@@ -88,6 +93,19 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setUpdateUser(userId);
         }
         return employeeMapper.addEmployee(employee);
+    }
+
+    @Override
+    public List<Employee> queryEmployeeByPage(EmployeePageQueryDTO employeePageQueryDTO) {
+        //获取员工姓名
+        String name = employeePageQueryDTO.getName();
+        //获取当前请求页
+        int page = employeePageQueryDTO.getPage();
+        //获取当前请求页的大小
+        int pageSize = employeePageQueryDTO.getPageSize();
+        //起始页 page  页的大小 pageSize
+        List<Employee> employees = employeeMapper.queryEmployeeByPage(name,(page - 1) * pageSize, pageSize);
+        return employees;
     }
 
 }

@@ -2,9 +2,12 @@ package com.sky.mapper;
 
 import com.sky.dto.EmployeeDTO;
 import com.sky.entity.Employee;
+import com.sky.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface EmployeeMapper {
@@ -24,4 +27,10 @@ public interface EmployeeMapper {
      **/
 //    @Insert("insert into employee()")
     int addEmployee(Employee employee);
+
+
+
+    List<Employee> queryEmployeeByPage(String name, int page, int pageSize);
+
+    long queryAllEmployee();
 }
