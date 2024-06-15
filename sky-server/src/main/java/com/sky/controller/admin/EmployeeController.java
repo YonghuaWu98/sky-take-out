@@ -118,6 +118,11 @@ public class EmployeeController {
         pageResult.setRecords(employees);
         return Result.success(pageResult);
     }
-
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "启用、禁用员工帐号")
+    public Result setStatus(@PathVariable("status") Integer status, Long id) {
+        employeeService.setStatusById(status, id);
+        return Result.success();
+    }
 
 }

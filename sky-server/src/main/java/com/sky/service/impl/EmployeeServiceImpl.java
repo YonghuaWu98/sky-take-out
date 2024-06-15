@@ -94,7 +94,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return employeeMapper.addEmployee(employee);
     }
-
+    /*
+    分页查询
+     */
     @Override
     public List<Employee> queryEmployeeByPage(EmployeePageQueryDTO employeePageQueryDTO) {
         //获取员工姓名
@@ -106,6 +108,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         //起始页 page  页的大小 pageSize
         List<Employee> employees = employeeMapper.queryEmployeeByPage(name,(page - 1) * pageSize, pageSize);
         return employees;
+    }
+    /**
+     *
+     * @param: status
+     * @param: id
+     * @return: void
+     **/
+    @Override
+    public void setStatusById(Integer status, Long id) {
+        employeeMapper.setStatusById(status, id);
     }
 
 }

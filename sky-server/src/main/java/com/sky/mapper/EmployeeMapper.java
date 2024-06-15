@@ -28,9 +28,25 @@ public interface EmployeeMapper {
 //    @Insert("insert into employee()")
     int addEmployee(Employee employee);
 
-
-
+    /**
+     * 分页查询员工信息
+     * @param: name
+     * @param: page
+     * @param: pageSize
+     * @return: List<Employee>
+     **/
     List<Employee> queryEmployeeByPage(String name, int page, int pageSize);
 
+    /**
+     * 查询所有员工信息
+     * @return: long
+     **/
     long queryAllEmployee();
+    
+    /* 根据员工id更改员工状态
+     * @param: status
+     * @param: id
+     * @return: void
+     **/
+    void setStatusById(Integer status, Long id);
 }

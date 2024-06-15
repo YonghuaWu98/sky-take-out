@@ -24,8 +24,13 @@ public interface EmployeeService {
      **/
     int addEmployee(EmployeeDTO employeeDTO);
     /*
-     * 查询所有的员工信息
+     * 分页查询员工信息
      * @return List<User>
      **/
     List<Employee> queryEmployeeByPage(EmployeePageQueryDTO employeePageQueryDTO);
+    /*
+        根据用户id重置用户状态
+     */
+    void setStatusById(Integer status, Long id);
+
 }
