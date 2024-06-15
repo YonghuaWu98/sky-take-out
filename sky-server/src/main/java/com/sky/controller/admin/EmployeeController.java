@@ -118,6 +118,7 @@ public class EmployeeController {
         pageResult.setRecords(employees);
         return Result.success(pageResult);
     }
+
     @PostMapping("/status/{status}")
     @ApiOperation(value = "启用、禁用员工帐号")
     public Result setStatus(@PathVariable("status") Integer status, Long id) {
@@ -125,4 +126,19 @@ public class EmployeeController {
         return Result.success();
     }
 
+
+    @GetMapping("/{id}")
+    @ApiOperation(value = "根据id查询员工")
+    public Result<Employee> queryEmployeeById(@PathVariable Long id) {
+        Employee employee = employeeService.queryEmployeeById(id);
+        return Result.success(employee);
+    }
+
+    @PutMapping()
+    @ApiOperation(value = "编辑员工")
+    public Result editEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.editEmployee(employeeDTO);
+
+        return Result.success();
+    }
 }

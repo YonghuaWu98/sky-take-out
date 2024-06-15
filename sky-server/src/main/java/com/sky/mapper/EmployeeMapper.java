@@ -49,4 +49,17 @@ public interface EmployeeMapper {
      * @return: void
      **/
     void setStatusById(Integer status, Long id);
+    /**
+     * 修改员工信息
+     * @param: employee
+     * @return: void
+     **/
+    void update(Employee employee);
+
+
+    /**
+     * 根据id查员工信息
+     * @return: Employee
+     **/
+    Employee queryEmployeeById(Long id);
 }

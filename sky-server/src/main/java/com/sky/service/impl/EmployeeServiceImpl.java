@@ -110,7 +110,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
     /**
-     *
+     * 禁用、启用员工帐号
      * @param: status
      * @param: id
      * @return: void
@@ -118,6 +118,30 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void setStatusById(Integer status, Long id) {
         employeeMapper.setStatusById(status, id);
+    }
+
+    /**
+     * 编辑员工信息
+     * @param: employeeDTO
+     * @return: void
+     **/
+    @Override
+    public void editEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据id查询员工
+     * @param: id
+     * @return: Employee
+     **/
+    @Override
+    public Employee queryEmployeeById(Long id) {
+        return employeeMapper.queryEmployeeById(id);
     }
 
 }

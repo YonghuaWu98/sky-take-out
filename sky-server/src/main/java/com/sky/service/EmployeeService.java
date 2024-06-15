@@ -32,5 +32,18 @@ public interface EmployeeService {
         根据用户id重置用户状态
      */
     void setStatusById(Integer status, Long id);
+    /**
+     * 编辑员工信息
+     * @param: employeeDTO
+     * @return: void
+     **/
+    void editEmployee(EmployeeDTO employeeDTO);
 
+
+    /**
+     * 根据id查询用户
+     * @param: id
+     * @return: Employee
+     **/
+    Employee queryEmployeeById(Long id);
 }
