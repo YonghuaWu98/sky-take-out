@@ -7,6 +7,7 @@ import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -45,5 +46,11 @@ public interface CategoryMapper {
      **/
     void deleteCategoryById(Long id);
 
+
+    /**
+     * 按照分类类型查询分类
+     * @return: List<Category>
+     **/
+    List<Category> queryByType(Integer type);
 }
 

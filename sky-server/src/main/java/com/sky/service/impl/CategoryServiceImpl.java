@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.sky.constant.MessageConstant.CATEGORY_BE_RELATED_BY_DISH;
 import static com.sky.constant.MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL;
@@ -108,6 +109,12 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DeletionNotAllowedException(CATEGORY_BE_RELATED_BY_SETMEAL);
         }
         categoryMapper.deleteCategoryById(id);
+    }
+
+    @Override
+    public List<Category> list(Integer type) {
+        List<Category> categories = categoryMapper.queryByType(type);
+        return categories;
     }
 
 }

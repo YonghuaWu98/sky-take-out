@@ -6,6 +6,8 @@ import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import com.sky.result.PageResult;
 
+import java.util.List;
+
 public interface CategoryService {
 
 
@@ -34,10 +36,17 @@ public interface CategoryService {
      * @return: void
      **/
     void save(CategoryDTO categoryDTO);
+
     /**
      * 根据id删除分类
      * @return: void
      **/
     void deleteCategoryById(Long id);
+
+    /**
+     * 根据类型查询分类
+     * @return: List<Category>
+     **/
+    List<Category> list(Integer type);
 }
 
