@@ -7,10 +7,6 @@ sky:
     username: root
     password: wyh989795
 
-  alioss:
-    bucket-name: mybcket01
-    endpoint: oss-cn-hangzhou.aliyuncs.com
-    access-key-id: LTAI5t91fpVemkBcmVk2QraZ
-    access-key-secret: ahfR1MK9EiUuLAXmVXYPdjjBMOySwE
+
 
 
