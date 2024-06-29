@@ -1,7 +1,12 @@
 package com.sky.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.druid.support.json.JSONUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.DishRedisKeyConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
@@ -15,12 +20,18 @@ import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import static com.sky.constant.DishRedisKeyConstant.CACHE_DISH_KEY;
 
 @Service
 @Slf4j
@@ -33,6 +44,8 @@ public class DishServiceImpl implements DishService {
     private CategoryMapper categoryMapper;
     @Resource
     private SetmealDishMapper setmealDishMapper;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
     /**
      * 菜品分页查询
      * @param: dishPageQueryDTO
@@ -66,8 +79,9 @@ public class DishServiceImpl implements DishService {
             //向口味表插入n条数据
             dishFlavorMapper.saveBatch(flavors);
         }
-
-
+        //删除该菜品对应菜品类别的缓存数据
+        String key = CACHE_DISH_KEY + dishDTO.getCategoryId();
+        stringRedisTemplate.delete(key);
     }
 
     /**
@@ -77,9 +91,10 @@ public class DishServiceImpl implements DishService {
      **/
     @Transactional
     public void deleteBatch(List<Long> ids) {
-
+        Set<Long> categoryIds = new HashSet<Long>();
         for (Long id : ids) {
             Dish dish = dishMapper.getById(id);
+            categoryIds.add(dish.getCategoryId());
             if (dish.getStatus() == StatusConstant.ENABLE) {
                 //当前菜品处于起售中，不能删除
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
@@ -95,6 +110,8 @@ public class DishServiceImpl implements DishService {
         dishMapper.delete(ids);
         //批量删除菜品关联口味数据
         dishFlavorMapper.delete(ids);
+        //从缓存中删除这些菜品
+        cleanCacheDish(CACHE_DISH_KEY + "*");
     }
 
     /**
@@ -138,6 +155,9 @@ public class DishServiceImpl implements DishService {
             //向口味表插入n条数据
             dishFlavorMapper.saveBatch(flavors);
         }
+        //删除缓存(可能会修改菜品分类，会影响多个分类的缓存数据时，选择删除所有菜品分类的缓存。
+        //key
+        cleanCacheDish(CACHE_DISH_KEY + "*");
     }
 
     /**
@@ -145,7 +165,11 @@ public class DishServiceImpl implements DishService {
      * @return: void
      **/
     public void setStatus(Integer status, Long id) {
+
         dishMapper.setStatus(status, id);
+        //删除缓存,因为需要查询到当前菜品的分类 id，所以直接删除所有菜品缓存
+        //key
+        cleanCacheDish(CACHE_DISH_KEY + "*");
     }
 
     /**
@@ -153,12 +177,30 @@ public class DishServiceImpl implements DishService {
      * @return: List<DishVO>
      **/
     public List<DishVO> listWithFlavor(Dish dish) {
+        //1 根据分类 id 从 redis 中获取菜品
+        String dish_key = CACHE_DISH_KEY + dish.getCategoryId();
+        String cacheDish = stringRedisTemplate.opsForValue().get(dish_key);
 
+        //2 判断是否存在
+        if (StrUtil.isNotBlank(cacheDish)) {
+            log.info("缓存命中");
+            //3 redis 缓存命中
+            //JSON 转为对象
+            JSONArray dishVOes = JSONUtil.parseArray(cacheDish);
+            List<DishVO> dishVO = JSONUtil.toList(dishVOes, DishVO.class);
+
+            return dishVO;
+        }
+        //4 未命中，从数据库中获取
+        log.info("缓存未命中");
         List<DishVO> dishVO = dishMapper.queryDishesById(dish);
         for (DishVO dv : dishVO) {
             List<DishFlavor> dishFlavors = dishFlavorMapper.getFlavorsById(dv.getId());
             dv.setFlavors(dishFlavors);
         }
+
+        //5 添加缓存到数据库并设置过期时间
+        stringRedisTemplate.opsForValue().set(dish_key, JSONUtil.toJsonStr(dishVO), 24L, TimeUnit.HOURS);
         return dishVO;
     }
 
@@ -171,5 +213,13 @@ public class DishServiceImpl implements DishService {
         return dishes;
     }
 
+    /**
+     * 菜品一旦修改就删除 reids 中对应的缓存
+     * @return: void
+     **/
+    public void cleanCacheDish(String pattern) {
+        Set<String> keys = stringRedisTemplate.keys(pattern);
+        stringRedisTemplate.delete(keys);
+    }
 
 }

@@ -9,8 +9,8 @@ sky:
   alioss:
     bucket-name: mybcket01
     endpoint: oss-cn-hangzhou.aliyuncs.com
-    access-key-id: LTAI5tLRUix4KzyhZDLBv11f
-    access-key-secret: qgvCNL25PBQC8AtdBfEJ2nAA4gI9cF
+    access-key-id: LTAI5t624UuonsuwAzAM5Q2K
+    access-key-secret: 8gQagq5UfO1XpTbMjpGoSHV8n1N0hf
 
   wechat:
     appid: wx10f6b28d88bf2e63
