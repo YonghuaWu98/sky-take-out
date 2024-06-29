@@ -28,7 +28,7 @@ public class DishServiceImpl implements DishService {
     @Resource
     private DishMapper dishMapper;
     @Resource
-    private DishFlavorMapper dishFlavorMapping;
+    private DishFlavorMapper dishFlavorMapper;
     @Resource
     private CategoryMapper categoryMapper;
     @Resource
@@ -64,7 +64,7 @@ public class DishServiceImpl implements DishService {
                 dishFlavor.setDishId(dishId);
             });
             //向口味表插入n条数据
-            dishFlavorMapping.saveBatch(flavors);
+            dishFlavorMapper.saveBatch(flavors);
         }
 
 
@@ -94,7 +94,7 @@ public class DishServiceImpl implements DishService {
         //逐个或批量删除菜品，在售的菜品不能删除
         dishMapper.delete(ids);
         //批量删除菜品关联口味数据
-        dishFlavorMapping.delete(ids);
+        dishFlavorMapper.delete(ids);
     }
 
     /**
@@ -106,7 +106,7 @@ public class DishServiceImpl implements DishService {
         //根据id查询菜品
         Dish dish = dishMapper.getById(id);
         //根据id查询口味
-        List<DishFlavor> flavors = dishFlavorMapping.getFlavorsById(id);
+        List<DishFlavor> flavors = dishFlavorMapper.getFlavorsById(id);
 
         DishVO dishVO = new DishVO();
         //将查询到的 dish 数据封装到 DishVO
@@ -130,13 +130,13 @@ public class DishServiceImpl implements DishService {
         //修改口味信息
         List<DishFlavor> flavors = dishDTO.getFlavors();
         //先删除后插入
-        dishFlavorMapping.deleteById(dishDTO.getId());
+        dishFlavorMapper.deleteById(dishDTO.getId());
         if (flavors != null && flavors.size() >  0) {
             flavors.forEach(dishFlavor -> {
                 dishFlavor.setDishId(dishDTO.getId());
             });
             //向口味表插入n条数据
-            dishFlavorMapping.saveBatch(flavors);
+            dishFlavorMapper.saveBatch(flavors);
         }
     }
 
@@ -146,6 +146,29 @@ public class DishServiceImpl implements DishService {
      **/
     public void setStatus(Integer status, Long id) {
         dishMapper.setStatus(status, id);
+    }
+
+    /**
+     * 根据分类 id 查询菜品和口味数据
+     * @return: List<DishVO>
+     **/
+    public List<DishVO> listWithFlavor(Dish dish) {
+
+        List<DishVO> dishVO = dishMapper.queryDishesById(dish);
+        for (DishVO dv : dishVO) {
+            List<DishFlavor> dishFlavors = dishFlavorMapper.getFlavorsById(dv.getId());
+            dv.setFlavors(dishFlavors);
+        }
+        return dishVO;
+    }
+
+    /**
+     * 根据分类id查询菜品
+     * @return: List<Dish>
+     **/
+    public List<Dish> listByCategoryId(DishDTO dishDTO) {
+        List<Dish> dishes = dishMapper.list(dishDTO);
+        return dishes;
     }
 
 

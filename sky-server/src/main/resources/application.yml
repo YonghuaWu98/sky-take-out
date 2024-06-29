@@ -13,7 +13,7 @@ spring:
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
   redis:
-    host: 192.168.33.131
+    host: 192.168.33.132
     port: 6379
     password: wyh989795
     lettuce:
@@ -25,7 +25,7 @@ spring:
 mybatis:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.sky.entity, com.sky.vo
+  type-aliases-package: com.sky.entity, com.sky.vo, com.sky.dto
   configuration:
     #开启驼峰命名
     map-underscore-to-camel-case: true
@@ -46,9 +46,18 @@ sky:
     admin-ttl: 7200000000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+    # 设置jwt签名加密时使用的密钥
+    user-secret-key: itheima
+    # 设置 jwt 过期时间
+    user-ttl: 72000000
+    # 设置前端传递过来的令牌名称
+    user-token-name: authentication
 
   alioss:
     endpoint: ${sky.alioss.endpoint}
     access-key-id: ${sky.alioss.access-key-id}
     access-key-secret: ${sky.alioss.access-key-secret}
     bucket-name: ${sky.alioss.bucket-name}
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}

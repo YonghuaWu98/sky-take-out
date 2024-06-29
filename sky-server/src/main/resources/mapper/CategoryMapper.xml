@@ -47,7 +47,7 @@
         </where>
         order by create_time desc
     </select>
-    <select id="queryByType" resultType="Category">
+    <select id="queryByType" resultType="category">
         select * from category
         where status = 1
         <if test="type != null">and type = #{type}</if>

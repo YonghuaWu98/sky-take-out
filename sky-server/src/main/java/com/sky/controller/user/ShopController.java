@@ -20,7 +20,7 @@ public class ShopController {
     private StringRedisTemplate stringRedisTemplate;
 
     @GetMapping("/status")
-    @ApiOperation("获取店铺状态")
+    @ApiOperation(value ="获取店铺状态")
     public Result<Integer> getStatus() {
 
         String status = stringRedisTemplate.opsForValue().get(MessageConstant.SHOP_STATUS_KEY);

@@ -1,9 +1,11 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.entity.User;
 import com.sky.mapper.EmployeeMapper;
@@ -16,6 +18,7 @@ import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.record.PasswordRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.availability.ReadinessState;
 import org.springframework.data.domain.PageRequest;
@@ -139,6 +142,16 @@ public class EmployeeController {
     public Result editEmployee(@RequestBody EmployeeDTO employeeDTO) {
         employeeService.editEmployee(employeeDTO);
 
+        return Result.success();
+    }
+
+    @PutMapping("/editPassword")
+    @ApiOperation(value = "修改密码")
+    //@RequestBody PasswordEditDTO passwordEditDTO,
+    public Result<String> editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+        log.info("当前修改密码的员工id为：{}", BaseContext.getCurrentId());
+        passwordEditDTO.setEmpId(BaseContext.getCurrentId());
+        employeeService.editPassword(passwordEditDTO);
         return Result.success();
     }
 }

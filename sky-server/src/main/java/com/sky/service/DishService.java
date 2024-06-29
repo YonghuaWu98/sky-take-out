@@ -40,4 +40,16 @@ public interface DishService {
      * @return: void
      **/
     void setStatus(Integer status, Long id);
+    /**
+     * 查询菜品和口味
+     * @return: List<DishVO>
+     **/
+    List<DishVO> listWithFlavor(Dish dish);
+
+    /**
+     * 根据分类id查询菜品
+     * @param: dishDTO
+     * @return: List<Dish>
+     **/
+    List<Dish> listByCategoryId(DishDTO dishDTO);
 }

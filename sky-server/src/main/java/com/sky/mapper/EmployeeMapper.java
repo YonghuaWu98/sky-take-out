@@ -2,6 +2,7 @@ package com.sky.mapper;
 
 import com.sky.annotations.AutoFill;
 import com.sky.dto.EmployeeDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.entity.User;
 import com.sky.enumeration.OperationType;
@@ -66,4 +67,17 @@ public interface EmployeeMapper {
      * @return: Employee
      **/
     Employee queryEmployeeById(Long id);
+
+    /**
+     * 根据员工 id 获取密码
+     * @return: String
+     **/
+    @Select("select password from employee where id = #{id}")
+    String getPasswordById(Long empId);
+    /**
+     * 根据员工 id 修改密码
+     * @return: void
+     **/
+
+    void updatePassword(PasswordEditDTO passwordEditDTO);
 }

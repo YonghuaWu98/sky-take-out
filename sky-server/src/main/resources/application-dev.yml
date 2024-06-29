@@ -12,5 +12,7 @@ sky:
     access-key-id: LTAI5tLRUix4KzyhZDLBv11f
     access-key-secret: qgvCNL25PBQC8AtdBfEJ2nAA4gI9cF
 
-
+  wechat:
+    appid: wx10f6b28d88bf2e63
+    secret: f2d1c3d18ab6cc58dfb30cdac76cc825
 

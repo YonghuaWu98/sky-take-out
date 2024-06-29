@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.SetmealDishMapper">
+    <delete id="deleteSetmealWithDish">
+        delete from setmeal_dish
+        where setmeal_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
     <select id="getSetmealIdsByDishIds" resultType="java.lang.Long">
         select setmeal_id from setmeal_dish
         where dish_id in
