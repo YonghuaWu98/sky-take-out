@@ -6,11 +6,7 @@ sky:
     database: sky_take_out
     username: root
     password: wyh989795
-  alioss:
-    bucket-name: mybcket01
-    endpoint: oss-cn-hangzhou.aliyuncs.com
-    access-key-id: LTAI5t624UuonsuwAzAM5Q2K
-    access-key-secret: 8gQagq5UfO1XpTbMjpGoSHV8n1N0hf
+
 
   wechat:
     appid: wx10f6b28d88bf2e63
