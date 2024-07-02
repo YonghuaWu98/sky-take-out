@@ -10,10 +10,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.sky.constant.DishRedisKeyConstant.CACHE_DISH_KEY;
 
 @RestController("userSetmealController")
 @RequestMapping("/user/setmeal")
@@ -24,6 +27,7 @@ public class SetmealController {
     private SetmealService setmealService;
     @GetMapping("/list")
     @ApiOperation(value ="根据分类id查询套餐信息")
+    @Cacheable(cacheNames = CACHE_DISH_KEY, key = "#categoryId")
     public Result<List<Setmeal>> listSetmeal(@RequestParam Long categoryId) {
 
         log.info("当前查询的套餐的分类id为{}", categoryId);

@@ -12,6 +12,8 @@ spring:
       url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
+      mysql:
+        usePingMethod: false
   redis:
     host: 192.168.33.132
     port: 6379
@@ -22,6 +24,10 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
+  cache:
+#    cacha-names:
+#      - cache:dish
+    type: redis
 mybatis:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
@@ -61,3 +67,6 @@ sky:
   wechat:
     appid: ${sky.wechat.appid}
     secret: ${sky.wechat.secret}
+
+
+

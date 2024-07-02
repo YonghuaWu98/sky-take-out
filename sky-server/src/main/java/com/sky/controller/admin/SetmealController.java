@@ -11,10 +11,13 @@ import com.sky.vo.SetmealVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.sky.constant.DishRedisKeyConstant.CACHE_DISH_KEY;
 
 @RestController("adminSetmealController")
 @RequestMapping("/admin/setmeal")
@@ -36,6 +39,7 @@ public class SetmealController {
 
     @PostMapping()
     @ApiOperation(value ="新增套餐")
+    @CacheEvict(cacheNames = CACHE_DISH_KEY, key = "#setmealDTO.cetagoryId")//新增套餐，与之关联的套餐分类的缓存需要删除
     public Result<String> addSetmeal(@RequestBody SetmealDTO setmealDTO) {
         log.info("新增套餐:{}", setmealDTO);
         setmealService.add(setmealDTO);
@@ -53,6 +57,7 @@ public class SetmealController {
 
     @PutMapping()
     @ApiOperation(value ="修改套餐")
+    @CacheEvict(cacheNames = CACHE_DISH_KEY, allEntries = true)
     public Result<String> querySetmealById(@RequestBody SetmealDTO setmealDTO) {
         log.info("当前修改的套餐为:{}", setmealDTO);
         setmealService.updateSetmeal(setmealDTO);
@@ -62,6 +67,7 @@ public class SetmealController {
 
     @PostMapping("/status/{status}")
     @ApiOperation(value ="套餐起售、停售")
+    @CacheEvict(cacheNames = CACHE_DISH_KEY, allEntries = true)
     public Result<String> setStatus(@PathVariable Integer status, @RequestParam Long id) {
         log.info("当前套餐设置状态为：{}", status == 0 ? "停售" : "起售");
         setmealService.setStatus(status, id);
@@ -69,6 +75,7 @@ public class SetmealController {
     }
     @DeleteMapping()
     @ApiOperation(value ="批量删除套餐")
+    @CacheEvict(cacheNames = CACHE_DISH_KEY, allEntries = true)
     public Result<String> deleteSetmealByIds(@RequestParam List<Long> ids) {
         setmealService.delete(ids);
         return Result.success();

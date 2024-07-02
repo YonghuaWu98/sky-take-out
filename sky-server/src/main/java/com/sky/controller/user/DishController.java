@@ -10,11 +10,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+
+import static com.sky.constant.DishRedisKeyConstant.CACHE_DISH_KEY;
 
 @RestController("userDishController")
 @RequestMapping("/user/dish")
@@ -25,6 +29,7 @@ public class DishController {
     private DishService dishService;
     @GetMapping("/list")
     @ApiOperation(value ="根据分类id查询菜品")
+
     public Result<List<DishVO>> listDishWithFlavorByCategoryId(@RequestParam Long categoryId) {
         log.info("当前查询的菜品分类id为：{}", categoryId);
         Dish dish = new Dish();
