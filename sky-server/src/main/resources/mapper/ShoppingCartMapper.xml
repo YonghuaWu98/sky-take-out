@@ -6,6 +6,14 @@
         insert into shopping_cart(name, image, user_id, dish_id, setmeal_id, dish_flavor, amount, create_time)
         values (#{name}, #{image}, #{userId},#{dishId},#{setmealId},#{dishFlavor},#{amount},#{createTime})
     </insert>
+    <update id="update" parameterType="shoppingCart">
+        update shopping_cart
+        set number = #{number}
+        <where>
+            <if test="dishId != null">and dish_id = #{dishId}</if>
+            <if test="setmealId != null">and setmeal_id = #{setmealId}</if>
+        </where>
+    </update>
     <delete id="delete">
         delete from shopping_cart
         <where>

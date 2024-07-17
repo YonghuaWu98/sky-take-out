@@ -26,7 +26,7 @@ public interface ShoppingCartMapper {
      * 更新购物车数据
      * @return: void
      **/
-    @Update("update shopping_cart set number = #{number}")
+//    @Update("update shopping_cart set number = #{number}")
     void update(ShoppingCart sc);
     /*
      * 添加购物车商品
