@@ -1,5 +1,6 @@
 package com.sky.mapper;
 
+import com.sky.entity.OrderDetail;
 import com.sky.entity.ShoppingCart;
 import com.sky.service.ShoppingCartService;
 import org.apache.ibatis.annotations.Delete;
@@ -39,4 +40,11 @@ public interface ShoppingCartMapper {
      * @return: void
      **/
     void delete(ShoppingCart shoppingCart);
+
+
+    /*
+     * 批量插入购物车数据
+     * @return: void
+     **/
+    void insertByBatch(List<ShoppingCart> shoppingCartList);
 }
