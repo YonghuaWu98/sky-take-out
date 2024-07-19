@@ -43,6 +43,7 @@
         where id = #{id}
     </update>
 
+
     <select id="queryByPage" parameterType="ordersPageQueryDTO" resultType="Orders">
         select * from orders
         <where>
