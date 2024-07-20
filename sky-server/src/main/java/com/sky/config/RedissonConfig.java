@@ -13,7 +13,7 @@ public class RedissonConfig {
     @Bean
     public RedissonClient redisson() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://192.168.33.132:6379").setPassword("wyh989795");
+        config.useSingleServer().setAddress("redis://192.168.33.133:6379").setPassword("wyh989795");
         return Redisson.create(config);
     }
 }
