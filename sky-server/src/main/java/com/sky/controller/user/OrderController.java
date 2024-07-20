@@ -1,10 +1,14 @@
 package com.sky.controller.user;
 
 import cn.hutool.db.Page;
+import com.alibaba.fastjson.JSON;
+import com.sky.constant.MessageConstant;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.Orders;
+import com.sky.exception.OrderBusinessException;
+import com.sky.mapper.OrderMapper;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
@@ -12,6 +16,7 @@ import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +27,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static javafx.scene.input.DataFormat.URL;
 
@@ -39,6 +46,10 @@ public class OrderController {
 
     @Resource
     private OrderService orderService;
+    @Resource
+    private WebSocketServer webSocketServer;
+    @Resource
+    private OrderMapper orderMapper;
     @PostMapping("/submit")
     @ApiOperation("用户下单")
     public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO)  {
@@ -104,6 +115,24 @@ public class OrderController {
     public Result repetition(@PathVariable Long id){
         log.info("当前需要再来一单的订单号为：{}", id);
         orderService.repetition(id);
+        return Result.success();
+    }
+
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("催单")
+    public Result reminder(@PathVariable Long id){
+        log.info("当前需要再来一单的订单号为：{}", id);
+        Orders orders = orderMapper.getById(id);
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        // 通过 websocket 向客户端浏览器推送消息 type orderId content
+        Map map = new HashMap();
+        map.put("type", 2);
+        map.put("orderId", id);
+        map.put("content", "订单号 ： " + orders.getNumber());
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
         return Result.success();
     }
 }
